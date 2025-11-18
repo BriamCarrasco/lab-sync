@@ -1,1 +1,35 @@
-<p>topbar works!</p>
+<!-- ...existing code... -->
+<nav class="navbar navbar-expand-md fixed-top bg-light navbar-light shadow">
+  <div class="container">
+    <div class="row w-100 align-items-center">
+      <div class="col-12 col-md-3 d-flex align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img id="labsync-logo" src="assets/logo.png" alt="LabSync Logo" height="50" class="me-2" />
+          <span class="fw-bold">LabSync</span>
+        </a>
+      </div>
+      <div class="col-12 col-md-6 d-md-flex justify-content-md-center">
+        <!-- futuro: menú central -->
+      </div>
+      <div class="col-12 col-md-3 d-md-flex justify-content-md-end">
+        <button
+          class="navbar-toggler ms-auto mb-2 mb-md-0"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-md-end" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-md-center">
+            <li class="nav-item">
+              <a class="nav-link btn btn-login text-white fw-bold px-4 py-2" href="#!">iniciar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

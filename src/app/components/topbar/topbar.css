@@ -1,0 +1,33 @@
+.btn-login {
+    background-color: #5899A4;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.navbar {
+  min-height: 80px;
+  font-size: 1.25rem; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#labsync-logo {
+  height: 50px; 
+}
+
+
+.btn-login:hover {
+    background-color: #41778A;
+    transform: scale(1.08);
+}
+
+@media (min-width: 768px) {
+  .navbar-toggler {
+    display: none;
+  }
+}
+
+.custom-center-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
