@@ -1,1 +1,73 @@
-<p>login works!</p>
+<section class="vh-100">
+  <div class="container-fluid login-container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="/assets/logo.png" width="600" class="img-fluid" alt="login" />
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="divider d-flex align-items-center my-4">
+            <p class="text-center fw-bold mx-6 mb-0">Iniciar sesión</p>
+          </div>
+
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form3Example3">Correo electrónico</label>
+            <input
+              type="email"
+              id="form3Example3"
+              class="form-control form-control-lg"
+              [class.is-invalid]="email?.invalid && (email?.touched || email?.dirty || isSubmitted)"
+              formControlName="email"
+              placeholder="Ingrese un correo electrónico válido"
+            />
+            <div
+              *ngIf="email?.errors?.['required'] && (email?.touched || email?.dirty || isSubmitted)"
+              class="invalid-feedback d-block"
+            >
+              El correo es obligatorio.
+            </div>
+            <div
+              *ngIf="email?.errors?.['email'] && (email?.touched || email?.dirty || isSubmitted)"
+              class="invalid-feedback d-block"
+            >
+              Ingresa un correo electrónico válido.
+            </div>
+          </div>
+
+          <div class="form-outline mb-4">
+            <label class="form-label" for="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              class="form-control form-control-lg"
+              [class.is-invalid]="
+                password?.invalid && (password?.touched || password?.dirty || isSubmitted)
+              "
+              formControlName="password"
+              placeholder="Ingrese una contraseña"
+            />
+            <div
+              *ngIf="password?.errors?.['required'] && (password?.touched || password?.dirty || isSubmitted)"
+              class="invalid-feedback d-block"
+            >
+              La contraseña es obligatoria.
+            </div>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button
+              type="submit"
+              class="btn btn-login text-white"
+              style="padding-left: 2rem; padding-right: 2rem"
+            >
+              Iniciar sesión
+            </button>
+            <p class="small fw-bold mt-2 pt-1 mb-0">
+              ¿No tienes una cuenta? <a href="#!" class="link-register">Regístrate</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
