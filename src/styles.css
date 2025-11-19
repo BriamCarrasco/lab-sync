@@ -1,1 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+input, .form-control {
+  border-radius: 2rem;
+}
+
+input:focus, .form-control:focus {
+  border-color: #5899A4;
+  box-shadow: 0 0 0 0.2rem rgba(88, 153, 164, 0.25);
+  border-radius: 2rem;
+}

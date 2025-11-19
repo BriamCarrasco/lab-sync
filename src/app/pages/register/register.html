@@ -1,0 +1,142 @@
+<section class="vh-100">
+  <div class="container-fluid login-container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="/assets/logo.png" width="600" class="img-fluid" alt="login" />
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="divider d-flex align-items-center my-4">
+            <p class="text-center fw-bold mx-6 mb-0">Registrate</p>
+          </div>
+
+          <!-- Paso 1: Datos personales -->
+          <ng-container *ngIf="step === 1">
+            <div class="form-outline mb-4">
+              <label class="form-label" for="name">Nombre</label>
+              <input
+                type="text"
+                id="name"
+                class="form-control form-control-lg"
+                [class.is-invalid]="name?.invalid && (name?.touched || name?.dirty || isSubmitted)"
+                formControlName="name"
+                placeholder="Ingrese su nombre"
+              />
+              <div *ngIf="name?.errors?.['required'] && (name?.touched || name?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                El nombre es obligatorio.
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="lastName">Apellido paterno</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    class="form-control form-control-lg"
+                    [class.is-invalid]="lastName?.invalid && (lastName?.touched || lastName?.dirty || isSubmitted)"
+                    formControlName="lastName"
+                    placeholder="Ingrese su apellido paterno"
+                  />
+                  <div *ngIf="lastName?.errors?.['required'] && (lastName?.touched || lastName?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                    El apellido paterno es obligatorio.
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="secondLastName">Apellido materno</label>
+                  <input
+                    type="text"
+                    id="secondLastName"
+                    class="form-control form-control-lg"
+                    [class.is-invalid]="secondLastName?.invalid && (secondLastName?.touched || secondLastName?.dirty || isSubmitted)"
+                    formControlName="secondLastName"
+                    placeholder="Ingrese su apellido materno"
+                  />
+                  <div *ngIf="secondLastName?.errors?.['required'] && (secondLastName?.touched || secondLastName?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                    El apellido materno es obligatorio.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-outline mb-4">
+              <label class="form-label" for="rut">Rut</label>
+              <input
+                type="text"
+                id="rut"
+                class="form-control form-control-lg"
+                [class.is-invalid]="rut?.invalid && (rut?.touched || rut?.dirty || isSubmitted)"
+                formControlName="rut"
+                placeholder="Ingrese su rut"
+              />
+              <div *ngIf="rut?.errors?.['required'] && (rut?.touched || rut?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                El rut es obligatorio.
+              </div>
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn text-white btn-register" (click)="nextStep()">Siguiente</button>
+            </div>
+          </ng-container>
+
+          <!-- Paso 2: Datos de cuenta -->
+          <ng-container *ngIf="step === 2">
+            <div class="form-outline mb-4">
+              <label class="form-label" for="username">Nombre de usuario</label>
+              <input
+                type="text"
+                id="username"
+                class="form-control form-control-lg"
+                [class.is-invalid]="username?.invalid && (username?.touched || username?.dirty || isSubmitted)"
+                formControlName="username"
+                placeholder="Ingrese su nombre de usuario"
+              />
+              <div *ngIf="username?.errors?.['required'] && (username?.touched || username?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                El nombre de usuario es obligatorio.
+              </div>
+            </div>
+            <div class="form-outline mb-4">
+              <label class="form-label" for="email">Correo electrónico</label>
+              <input
+                type="email"
+                id="email"
+                class="form-control form-control-lg"
+                [class.is-invalid]="email?.invalid && (email?.touched || email?.dirty || isSubmitted)"
+                formControlName="email"
+                placeholder="Ingrese un correo electrónico válido"
+              />
+              <div *ngIf="email?.errors?.['required'] && (email?.touched || email?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                El correo es obligatorio.
+              </div>
+              <div *ngIf="email?.errors?.['email'] && (email?.touched || email?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                Ingresa un correo electrónico válido.
+              </div>
+            </div>
+            <div class="form-outline mb-4">
+              <label class="form-label" for="password">Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                class="form-control form-control-lg"
+                [class.is-invalid]="password?.invalid && (password?.touched || password?.dirty || isSubmitted)"
+                formControlName="password"
+                placeholder="Ingrese una contraseña"
+              />
+              <div *ngIf="password?.errors?.['required'] && (password?.touched || password?.dirty || isSubmitted)" class="invalid-feedback d-block">
+                La contraseña es obligatoria.
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn text-white btn-register" (click)="prevStep()">Anterior</button>
+              <button type="submit" class="btn text-white btn-register">Registrarse</button>
+            </div>
+          </ng-container>
+
+          <p class="small fw-bold mt-2 pt-1 mb-0 text-center">
+            ¿Ya tienes una cuenta? <a href="/login" class="link-register">Inicia sesión</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
