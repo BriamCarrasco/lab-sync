@@ -1,8 +1,3 @@
-.btn-login {
-    background-color: #5899A4;
-    transition: background-color 0.3s, transform 0.3s;
-    border-radius: 35px;
-}
 
 .navbar {
   min-height: 80px;
@@ -12,12 +7,6 @@
 
 #labsync-logo {
   height: 50px; 
-}
-
-
-.btn-login:hover {
-    background-color: #41778A;
-    transform: scale(1.08);
 }
 
 @media (min-width: 768px) {

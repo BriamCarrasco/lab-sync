@@ -3,24 +3,6 @@
   transform: translate(-50%, -50%);
 }
 
-.btn-registro {
-  border: 2px solid #5899A4;
-  background-color: #fff;
-  color: #5899A4;
-  font-weight: bold;
-  font-size: 1.1rem;     
-  padding: 0.70rem 2.2rem; 
-  transition: transform 0.3s;
-  border-radius: 35px;
-}
-
-.btn-registro:hover {
-  transform: scale(1.08);
-  background-color: #fff;
-  color: #5899A4;
-  border-color: #5899A4;
-}
-
 .landing-content {
   margin-top: 80px; 
 }

@@ -3,13 +3,18 @@
   <div class="container">
     <div class="row w-100 align-items-center">
       <div class="col-12 col-md-3 d-flex align-items-center">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <img id="labsync-logo" src="assets/logo.png" alt="LabSync Logo" height="50" class="me-2" />
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <img
+            id="labsync-logo"
+            src="assets/logo.png"
+            alt="LabSync Logo"
+            height="50"
+            class="me-2"
+          />
           <span class="fw-bold">LabSync</span>
         </a>
       </div>
       <div class="col-12 col-md-6 d-md-flex justify-content-md-center">
-        <!-- futuro: menú central -->
       </div>
       <div class="col-12 col-md-3 d-md-flex justify-content-md-end">
         <button
@@ -19,14 +24,37 @@
           data-bs-target="#navbarNav"
           aria-controls="navbarNav"
           aria-expanded="false"
-          aria-label="Toggle navigation">
+          aria-label="Toggle navigation"
+        >
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-md-end" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-md-center">
+            @if (router.url === '/landing') {
             <li class="nav-item">
-              <a class="nav-link btn btn-login text-white fw-bold px-4 py-2" href="/login">iniciar sesión</a>
+              <a class="nav-link btn btn-main text-white fw-bold px-4 py-2" href="/login"
+                >Iniciar sesión</a
+              >
             </li>
+            } @if (router.url === '/login') {
+            <li class="nav-item">
+              <a class="nav-link btn btn-main text-white fw-bold px-4 py-2" href="/register"
+                >Registrarse</a
+              >
+            </li>
+            } @if (router.url === '/register') {
+            <li class="nav-item">
+              <a class="nav-link btn btn-main text-white fw-bold px-4 py-2" href="/login"
+                >Iniciar sesión</a
+              >
+            </li>
+            } @if (router.url === '/home') {
+            <li class="nav-item">
+              <a class="nav-link btn btn-main text-white fw-bold px-4 py-2" href="/"
+                >Cerrar sesión</a
+              >
+            </li>
+            }
           </ul>
         </div>
       </div>
