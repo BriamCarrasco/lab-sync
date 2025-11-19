@@ -1,0 +1,15 @@
+.footer {
+  background-color: #5899A4; /* Color principal */
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  padding-top: 2rem;
+  padding-bottom: 0;
+}
+
+.footer-logo {
+  width: 100px;
+  height: auto;
+  filter: drop-shadow(0 2px 4px rgba(88,153,164,0.15));
+}

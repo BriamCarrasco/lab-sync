@@ -1,6 +1,7 @@
 .btn-login {
     background-color: #5899A4;
     transition: background-color 0.3s, transform 0.3s;
+    border-radius: 35px;
 }
 
 .navbar {
