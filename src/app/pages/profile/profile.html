@@ -1,1 +1,117 @@
-<p>profile works!</p>
+<section class="vh-100">
+  <div class="container-fluid login-container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <div class="divider d-flex align-items-center my-4">
+            <p class="text-start fw-bold mx-6 mb-0 flex-grow-1">Editar perfil</p>
+            <a class="btn btn-main text-white" href="/cambiar-password">Cambiar contraseña</a>
+          </div>
+
+          <div class="form-outline mb-4">
+            <label class="form-label" for="name">Nombre</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control form-control-lg"
+              formControlName="name"
+              [readonly]="!canEdit"
+              [class.is-invalid]="name?.invalid && (name?.touched || name?.dirty || isSubmitted)"
+              placeholder="Ingrese su nombre"
+            />
+            @if (name?.errors?.['required'] && (name?.touched || name?.dirty || isSubmitted)) {
+            <div class="invalid-feedback d-block">El nombre es obligatorio.</div>
+            }
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="form-outline mb-4">
+                <label class="form-label" for="lastName">Apellido paterno</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  class="form-control form-control-lg"
+                  formControlName="lastName"
+                  [readonly]="!canEdit"
+                  [class.is-invalid]="
+                    lastName?.invalid && (lastName?.touched || lastName?.dirty || isSubmitted)
+                  "
+                  placeholder="Ingrese su apellido paterno"
+                />
+                @if (lastName?.errors?.['required'] && (lastName?.touched || lastName?.dirty ||
+                isSubmitted)) {
+                <div class="invalid-feedback d-block">El apellido paterno es obligatorio.</div>
+                }
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-outline mb-4">
+                <label class="form-label" for="secondLastName">Apellido materno</label>
+                <input
+                  type="text"
+                  id="secondLastName"
+                  class="form-control form-control-lg"
+                  formControlName="secondLastName"
+                  [readonly]="!canEdit"
+                  [class.is-invalid]="
+                    secondLastName?.invalid &&
+                    (secondLastName?.touched || secondLastName?.dirty || isSubmitted)
+                  "
+                  placeholder="Ingrese su apellido materno"
+                />
+                @if (secondLastName?.errors?.['required'] && (secondLastName?.touched ||
+                secondLastName?.dirty || isSubmitted)) {
+                <div class="invalid-feedback d-block">El apellido materno es obligatorio.</div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="username">Nombre de usuario</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control form-control-lg"
+              formControlName="userName"
+              [readonly]="!canEdit"
+              [class.is-invalid]="
+                userName?.invalid && (userName?.touched || userName?.dirty || isSubmitted)
+              "
+              placeholder="Ingrese su nombre de usuario"
+            />
+            @if (userName?.errors?.['required'] && (userName?.touched || userName?.dirty ||
+            isSubmitted)) {
+            <div class="invalid-feedback d-block">El nombre de usuario es obligatorio.</div>
+            }
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="rut">Rut</label>
+            <input
+              type="text"
+              id="rut"
+              class="form-control form-control-lg"
+              formControlName="rut"
+              readonly
+              placeholder="Rut"
+            />
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="email">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control form-control-lg"
+              formControlName="email"
+              readonly
+              placeholder="Correo electrónico"
+            />
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button type="submit" class="btn btn-main text-white">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
