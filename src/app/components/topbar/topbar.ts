@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../service/AuthService';
 
 @Component({
   selector: 'app-topbar',
@@ -9,18 +10,18 @@ import { CommonModule } from '@angular/common';
   styleUrl: './topbar.css',
 })
 export class Topbar {
-  constructor(public router: Router) {}
+  constructor(public router: Router, private readonly auth: AuthService) {}
 
-  isLogin() {
-    return this.router.url === '/login';
+  isAuthenticated() {
+    return this.auth.isAuthenticated();
   }
-  isRegister() {
-    return this.router.url === '/register';
+
+  get username() {
+    return this.auth.getUsername();
   }
-  isHome() {
-    return this.router.url === '/home' || this.router.url === '/landing';
-  }
-  isProfile() {
-    return this.router.url === '/profile';
+
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['/landing']);
   }
 }

@@ -14,8 +14,7 @@
           <span class="fw-bold">LabSync</span>
         </a>
       </div>
-      <div class="col-12 col-md-6 d-md-flex justify-content-md-center">
-      </div>
+      <div class="col-12 col-md-6 d-md-flex justify-content-md-center"></div>
       <div class="col-12 col-md-3 d-md-flex justify-content-md-end">
         <button
           class="navbar-toggler ms-auto mb-2 mb-md-0"
@@ -30,7 +29,7 @@
         </button>
         <div class="collapse navbar-collapse justify-content-md-end" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-md-center">
-            @if (router.url === '/landing') {
+            @if (!isAuthenticated()) { @if (router.url === '/landing') {
             <li class="nav-item">
               <a class="nav-link btn btn-main text-white fw-bold px-4 py-2" href="/login"
                 >Iniciar sesión</a
@@ -48,11 +47,17 @@
                 >Iniciar sesión</a
               >
             </li>
-            } @if (router.url === '/home') {
+            } } @else {
+            <li class="nav-item me-2">
+              <a class="nav-link fw-bold" href="/profile">{{ username }}</a>
+            </li>
             <li class="nav-item">
-              <a class="nav-link btn btn-main text-white fw-bold px-4 py-2" href="/"
-                >Cerrar sesión</a
+              <button
+                (click)="logout()"
+                class="nav-link btn btn-main text-white fw-bold px-4 py-2 border-0"
               >
+                Cerrar sesión
+              </button>
             </li>
             }
           </ul>

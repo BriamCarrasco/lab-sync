@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../service/AuthService';
 
 @Component({
   selector: 'app-login',
@@ -12,16 +14,22 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 export class Login {
   loginForm: FormGroup;
   isSubmitted = false;
+  loading = false;
+  loginError: string | null = null;
 
-  constructor(private readonly fb: FormBuilder) {
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly auth: AuthService,
+    private readonly router: Router
+  ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(5)]],
     });
   }
 
-  get email() {
-    return this.loginForm.get('email');
+  get username() {
+    return this.loginForm.get('username');
   }
   get password() {
     return this.loginForm.get('password');
@@ -29,9 +37,24 @@ export class Login {
 
   onSubmit() {
     this.isSubmitted = true;
+    this.loginError = null;
     this.loginForm.markAllAsTouched();
     if (this.loginForm.invalid) return;
-
-    console.log(this.loginForm.value);
+    this.loading = true;
+    const { username, password } = this.loginForm.value;
+    this.auth.login({ username, password }).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.loading = false;
+        if (err.status === 401) {
+          this.loginError = 'Credenciales inválidas.';
+        } else {
+          this.loginError = 'Error al iniciar sesión. Intenta nuevamente.';
+        }
+      },
+    });
   }
 }
