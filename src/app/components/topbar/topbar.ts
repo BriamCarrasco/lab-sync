@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../service/AuthService';
 
 @Component({
   selector: 'app-topbar',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './topbar.html',
   styleUrl: './topbar.css',
 })
@@ -18,6 +18,15 @@ export class Topbar {
 
   get username() {
     return this.auth.getUsername();
+  }
+
+  get role() {
+    return this.auth.getRole();
+  }
+
+  isAdmin() {
+    const r = this.role?.trim().toUpperCase();
+    return r === 'ADMIN' || r === 'ROLE_ADMIN';
   }
 
   logout() {
