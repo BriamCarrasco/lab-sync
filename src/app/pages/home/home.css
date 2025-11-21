@@ -1,3 +1,5 @@
 .home-content {
-  margin-top: 80px;
+  margin-top: 90px;
 }
+
+.min-vh-75 { min-height: 75vh; }
