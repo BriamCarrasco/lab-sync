@@ -45,3 +45,29 @@ input:focus,
     text-decoration: none;
     font-weight: bold;
 }
+
+.btn-secondary-m {
+  border: 1px solid #5899A4;
+  background-color: #fff;
+  color: #23404e; 
+  font-size: 0.9rem;     
+  transition: transform 0.3s;
+  border-radius: 35px;
+}
+
+.btn-secondary-m:hover {
+  transform: scale(1.08);
+  background-color: #fff;
+  color: #23404e;
+  border-color: #5899A4;
+}
+
+body, app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1 0 auto;
+}
