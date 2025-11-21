@@ -43,9 +43,14 @@ export class Login {
     this.loading = true;
     const { username, password } = this.loginForm.value;
     this.auth.login({ username, password }).subscribe({
-      next: () => {
+      next: (res) => {
         this.loading = false;
-        this.router.navigate(['/home']);
+        const role = res.role?.toUpperCase();
+        if (role && role.replace(/^ROLE_/, '') === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/home']);
+        }
       },
       error: (err) => {
         this.loading = false;
