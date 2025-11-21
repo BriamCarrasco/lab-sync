@@ -1,0 +1,13 @@
+h2 {
+  font-weight: 600;
+}
+.card {
+  border: 1px solid #e2e3e5;
+}
+.card-title {
+  margin-bottom: 0.5rem;
+}
+
+.main-content {
+  margin-top: 90px;
+}

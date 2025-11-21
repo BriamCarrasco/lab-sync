@@ -1,0 +1,134 @@
+<section class="user-content">
+  <h2 class="mb-3">Administración de Usuarios</h2>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar (nombre, usuario, correo)"
+        (input)="searchTerm.set($any($event.target).value)"
+      />
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Crear nuevo usuario</h5>
+      <form [formGroup]="createForm" (ngSubmit)="createUser()">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <input formControlName="name" class="form-control" placeholder="Nombre" />
+          </div>
+          <div class="col-md-4">
+            <input
+              formControlName="firstLastname"
+              class="form-control"
+              placeholder="Apellido paterno"
+            />
+          </div>
+          <div class="col-md-4">
+            <input
+              formControlName="secondLastname"
+              class="form-control"
+              placeholder="Apellido materno"
+            />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="email" class="form-control" placeholder="Email" />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="username" class="form-control" placeholder="Usuario" />
+          </div>
+          <div class="col-md-4">
+            <input
+              formControlName="password"
+              type="password"
+              class="form-control"
+              placeholder="Password"
+            />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="rut" class="form-control" placeholder="RUT (12345678-9)" />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="role" class="form-control" placeholder="Rol (opcional)" />
+          </div>
+        </div>
+        <div class="mt-3">
+          <button
+            class="btn btn-main"
+            [ngClass]="{ 'text-white': !saving && !createForm.invalid }"
+            type="submit"
+            [disabled]="saving || createForm.invalid"
+          >
+            {{ saving ? 'Guardando...' : 'Crear usuario' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="loading">Cargando usuarios...</div>
+  <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+
+  <table class="table table-sm" *ngIf="!loading && filteredUsers().length">
+    <thead>
+      <tr>
+        <th>Nombre completo</th>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>RUT</th>
+        <th style="width: 160px">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of filteredUsers(); trackBy: trackById">
+        <!-- Usamos condición sin optional chaining para que Angular haga type narrowing (editUser no es null dentro) -->
+        <ng-container *ngIf="editUser && editUser.id === u.id; else viewRow">
+          <td>
+            <input [(ngModel)]="editUser.name" class="form-control form-control-sm mb-1" />
+            <input [(ngModel)]="editUser.firstLastname" class="form-control form-control-sm mb-1" />
+            <input [(ngModel)]="editUser.secondLastname" class="form-control form-control-sm" />
+          </td>
+          <td><input [(ngModel)]="editUser.username" class="form-control form-control-sm" /></td>
+          <td><input [(ngModel)]="editUser.email" class="form-control form-control-sm" /></td>
+          <td><input [(ngModel)]="editUser.role" class="form-control form-control-sm" /></td>
+          <td><input [(ngModel)]="editUser.rut" class="form-control form-control-sm" /></td>
+          <td>
+            <button class="btn btn-sm btn-main me-1" (click)="saveEdit()" [disabled]="saving">
+              Guardar
+            </button>
+            <button class="btn btn-sm btn-secondary-m" (click)="cancelEdit()" [disabled]="saving">
+              Cancelar
+            </button>
+          </td>
+        </ng-container>
+        <ng-template #viewRow>
+          <td>{{ u.name }} {{ u.firstLastname }} {{ u.secondLastname }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.role }}</td>
+          <td>{{ u.rut }}</td>
+          <td>
+            <button class="btn btn-sm btn-main me-1 text-white" (click)="startEdit(u)" [disabled]="saving">
+              Editar
+            </button>
+            <button
+              class="btn btn-sm btn-secondary-m"
+              (click)="deleteUser(u.id)"
+              [disabled]="deletingId === u.id || saving"
+            >
+              {{ deletingId === u.id ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !filteredUsers().length" class="text-muted">
+    Sin usuarios que coincidan con la búsqueda.
+  </div>
+</section>

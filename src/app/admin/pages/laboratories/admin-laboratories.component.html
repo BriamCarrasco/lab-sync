@@ -1,0 +1,107 @@
+<section class="lab-content">
+  <h2 class="mb-3">Administración de Laboratorios</h2>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar (nombre, especialidad, dirección)"
+        (input)="searchTerm.set($any($event.target).value)"
+      />
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Crear nuevo laboratorio</h5>
+      <form [formGroup]="createForm" (ngSubmit)="createLab()">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <input formControlName="name" class="form-control" placeholder="Nombre" />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="address" class="form-control" placeholder="Dirección" />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="specialty" class="form-control" placeholder="Especialidad" />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="phone" class="form-control" placeholder="Teléfono" />
+          </div>
+          <div class="col-md-4">
+            <input formControlName="email" class="form-control" placeholder="Email" />
+          </div>
+        </div>
+        <div class="mt-3">
+          <button
+            class="btn btn-main"
+            [ngClass]="{ 'text-white': !saving && !createForm.invalid }"
+            type="submit"
+            [disabled]="saving || createForm.invalid"
+          >
+            {{ saving ? 'Guardando...' : 'Crear laboratorio' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="loading">Cargando laboratorios...</div>
+  <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+
+  <table class="table table-sm" *ngIf="!loading && filteredLabs().length">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Especialidad</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th style="width: 160px">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let l of filteredLabs(); trackBy: trackById">
+        <ng-container *ngIf="editLab && editLab.id === l.id; else viewRow">
+          <td><input [(ngModel)]="editLab.name" class="form-control form-control-sm" /></td>
+          <td><input [(ngModel)]="editLab.address" class="form-control form-control-sm" /></td>
+          <td><input [(ngModel)]="editLab.specialty" class="form-control form-control-sm" /></td>
+          <td><input [(ngModel)]="editLab.phone" class="form-control form-control-sm" /></td>
+          <td><input [(ngModel)]="editLab.email" class="form-control form-control-sm" /></td>
+          <td>
+            <button class="btn btn-sm btn-main me-1" (click)="saveEdit()" [disabled]="saving">
+              Guardar
+            </button>
+            <button class="btn btn-sm btn-secondary-m" (click)="cancelEdit()" [disabled]="saving">
+              Cancelar
+            </button>
+          </td>
+        </ng-container>
+        <ng-template #viewRow>
+          <td>{{ l.name }}</td>
+          <td>{{ l.address }}</td>
+          <td>{{ l.specialty }}</td>
+          <td>{{ l.phone }}</td>
+          <td>{{ l.email }}</td>
+          <td>
+            <button class="btn btn-sm btn-main me-1 text-white" (click)="startEdit(l)" [disabled]="saving">
+              Editar
+            </button>
+            <button
+              class="btn btn-sm btn-secondary-m"
+              (click)="deleteLab(l.id)"
+              [disabled]="deletingId === l.id || saving"
+            >
+              {{ deletingId === l.id ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && !filteredLabs().length" class="text-muted">
+    Sin laboratorios que coincidan con la búsqueda.
+  </div>
+</section>
