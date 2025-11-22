@@ -3,21 +3,24 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, RegisterRequest } from '../../service/AuthService';
+import { Toast } from '../../components/toast/toast';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, Toast],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
 export class Register {
   registerForm: FormGroup;
   isSubmitted = false;
-  step = 1; // controla el paso actual
+  step = 1;
   loading = false;
-  registerError: string | null = null;
-  registerSuccess: string | null = null;
+
+  toastMsg: string = '';
+  showToast: boolean = false;
+  toastType: 'success' | 'error' = 'success';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -28,13 +31,7 @@ export class Register {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       secondLastName: ['', Validators.required],
-      rut: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^\d{7,8}-[\dkK]$/), // formato básico RUT
-        ],
-      ],
+      rut: ['', [Validators.required, Validators.pattern(/^\d{7,8}-[\dkK]$/)]],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(5)]],
@@ -65,7 +62,6 @@ export class Register {
 
   nextStep() {
     this.isSubmitted = true;
-    // Solo avanza si los campos del primer paso son válidos
     if (this.name?.valid && this.lastName?.valid && this.secondLastName?.valid && this.rut?.valid) {
       this.step = 2;
       this.isSubmitted = false;
@@ -77,10 +73,15 @@ export class Register {
     this.isSubmitted = false;
   }
 
+  showToastMsg(msg: string, type: 'success' | 'error' = 'success') {
+    this.toastMsg = msg;
+    this.toastType = type;
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 3000);
+  }
+
   onSubmit() {
     this.isSubmitted = true;
-    this.registerError = null;
-    this.registerSuccess = null;
     this.registerForm.markAllAsTouched();
     if (this.registerForm.invalid) return;
     this.loading = true;
@@ -88,8 +89,8 @@ export class Register {
     const formValue = this.registerForm.value;
     const payload: RegisterRequest = {
       name: formValue.name,
-      firstLastname: formValue.lastName, // <-- debe coincidir con el backend
-      secondLastname: formValue.secondLastName, // <-- debe coincidir con el backend
+      firstLastname: formValue.lastName,
+      secondLastname: formValue.secondLastName,
       email: formValue.email,
       username: formValue.username,
       password: formValue.password,
@@ -100,15 +101,15 @@ export class Register {
     this.auth.register(payload).subscribe({
       next: () => {
         this.loading = false;
-        this.registerSuccess = 'Registro exitoso. Serás redirigido al login.';
+        this.showToastMsg('Registro exitoso. Serás redirigido al login.', 'success');
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err) => {
         this.loading = false;
         if (err.status === 409) {
-          this.registerError = 'El nombre de usuario o correo ya está en uso.';
+          this.showToastMsg('El nombre de usuario o correo ya está en uso.', 'error');
         } else {
-          this.registerError = 'Error al registrar. Intenta nuevamente.';
+          this.showToastMsg('Error al registrar. Intenta nuevamente.', 'error');
         }
       },
     });

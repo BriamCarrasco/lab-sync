@@ -11,11 +11,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../service/UserService';
 import { AuthService } from '../../service/AuthService';
+import { Toast } from '../../components/toast/toast';
 
 @Component({
   selector: 'app-recoverypassword',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, Toast],
   templateUrl: './recoverypassword.html',
   styleUrl: './recoverypassword.css',
 })
@@ -36,6 +37,10 @@ export class Recoverypassword {
   errorMsg: string | null = null;
   successMsg: string | null = null;
   loading = false;
+
+  toastMsg: string = '';
+  showToast: boolean = false;
+  toastType: 'success' | 'error' = 'success';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -62,6 +67,20 @@ export class Recoverypassword {
     return this.passwordForm.controls.repeatPassword;
   }
 
+  showSuccess(msg: string) {
+    this.toastMsg = msg;
+    this.showToast = true;
+    this.toastType = 'success';
+    setTimeout(() => (this.showToast = false), 3000);
+  }
+
+  showError(msg: string) {
+    this.toastMsg = msg;
+    this.toastType = 'error';
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 3000);
+  }
+
   onSubmit() {
     this.isSubmitted = true;
     this.errorMsg = null;
@@ -71,6 +90,7 @@ export class Recoverypassword {
     if (this.passwordForm.invalid) {
       if (this.passwordForm.errors?.['mismatch']) {
         this.errorMsg = 'Las contraseñas nuevas no coinciden.';
+        this.showError(this.errorMsg);
       }
       return;
     }
@@ -78,6 +98,7 @@ export class Recoverypassword {
     const id = this.auth.getUserId?.();
     if (!id) {
       this.errorMsg = 'No se pudo identificar el usuario.';
+      this.showError(this.errorMsg);
       return;
     }
 
@@ -90,12 +111,14 @@ export class Recoverypassword {
         this.passwordForm.reset();
         this.isSubmitted = false;
         this.loading = false;
+        this.showSuccess(this.successMsg);
       },
       error: (err) => {
         this.errorMsg =
           err.status === 400
             ? 'La contraseña actual es incorrecta.'
             : 'No se pudo actualizar la contraseña.';
+        this.showError(this.errorMsg);
         this.loading = false;
       },
     });

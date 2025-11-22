@@ -8,11 +8,12 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { UsersService, User } from '../../service/users';
+import { Toast } from '../../../components/toast/toast';
 
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Toast],
   templateUrl: './admin-users.component.html',
   styleUrls: ['./admin-users.component.css'],
 })
@@ -23,11 +24,12 @@ export class AdminUsersComponent implements OnInit {
   editUser: User | null = null;
   saving = false;
   deletingId: number | null = null;
+  toastMsg: string = '';
+  showToast: boolean = false;
+  toastType: 'success' | 'error' = 'success';
 
-  // Formulario creación
   createForm: FormGroup;
 
-  // Búsqueda simple
   searchTerm = signal<string>('');
 
   constructor(private readonly fb: FormBuilder, private readonly usersService: UsersService) {
@@ -39,8 +41,22 @@ export class AdminUsersComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(5)]],
       rut: ['', [Validators.required, Validators.pattern(/^\d{7,8}-[\dkK]$/)]],
-      role: [''], // opcional
+      role: [''],
     });
+  }
+
+  showSuccess(msg: string) {
+    this.toastMsg = msg;
+    this.showToast = true;
+    this.toastType = 'success';
+    setTimeout(() => (this.showToast = false), 3000);
+  }
+
+  showError(msg: string) {
+    this.toastMsg = msg;
+    this.toastType = 'error';
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 3000);
   }
 
   ngOnInit() {
@@ -58,11 +74,11 @@ export class AdminUsersComponent implements OnInit {
       error: () => {
         this.errorMsg = 'Error al cargar usuarios';
         this.loading = false;
+        this.showError(this.errorMsg);
       },
     });
   }
 
-  // Filtrado simple (nombre o username)
   filteredUsers(): User[] {
     const term = this.searchTerm().trim().toLowerCase();
     if (!term) return this.users;
@@ -70,12 +86,13 @@ export class AdminUsersComponent implements OnInit {
       (u) =>
         u.name.toLowerCase().includes(term) ||
         u.username.toLowerCase().includes(term) ||
-        u.email.toLowerCase().includes(term)
+        u.email.toLowerCase().includes(term) ||
+        u.role.toLowerCase().includes(term)
     );
   }
 
   startEdit(user: User) {
-    this.editUser = { ...user }; // copia para evitar mutación directa
+    this.editUser = { ...user };
   }
 
   cancelEdit() {
@@ -91,10 +108,11 @@ export class AdminUsersComponent implements OnInit {
         this.users = this.users.map((u) => (u.id === updated.id ? updated : u));
         this.editUser = null;
         this.saving = false;
+        this.showSuccess('Usuario actualizado correctamente');
       },
-      error: (err) => {
-        this.errorMsg = typeof err?.error === 'string' ? err.error : 'Error al actualizar';
+      error: () => {
         this.saving = false;
+        this.showError('Error al actualizar usuario');
       },
     });
   }
@@ -109,10 +127,11 @@ export class AdminUsersComponent implements OnInit {
         this.users = [newUser, ...this.users];
         this.createForm.reset();
         this.saving = false;
+        this.showSuccess('Usuario creado correctamente');
       },
-      error: (err) => {
-        this.errorMsg = typeof err?.error === 'string' ? err.error : 'Error al crear usuario';
+      error: () => {
         this.saving = false;
+        this.showError('Error al crear usuario');
       },
     });
   }
@@ -124,10 +143,12 @@ export class AdminUsersComponent implements OnInit {
       next: () => {
         this.users = this.users.filter((u) => u.id !== id);
         this.deletingId = null;
+        this.showSuccess('Usuario eliminado correctamente');
       },
       error: () => {
         this.errorMsg = 'Error al eliminar usuario';
         this.deletingId = null;
+        this.showError(this.errorMsg);
       },
     });
   }

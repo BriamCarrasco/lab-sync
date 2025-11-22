@@ -1,3 +1,4 @@
+<app-toast [message]="toastMsg" [show]="showToast" [type]="toastType"></app-toast>
 <section class="vh-100">
   <div class="container-fluid login-container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
@@ -6,11 +7,6 @@
       </div>
       <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-          @if (registerError) {
-          <div class="alert alert-danger py-2" role="alert">{{ registerError }}</div>
-          } @if (registerSuccess) {
-          <div class="alert alert-success py-2" role="alert">{{ registerSuccess }}</div>
-          }
           <div class="divider d-flex align-items-center my-4">
             <p class="text-center fw-bold mx-6 mb-0">Registrate</p>
           </div>

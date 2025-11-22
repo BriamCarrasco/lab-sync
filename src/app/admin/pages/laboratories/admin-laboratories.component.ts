@@ -1,12 +1,19 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormsModule,
+} from '@angular/forms';
 import { LaboratoriesService, Laboratory } from '../../service/laboratories';
+import { Toast } from '../../../components/toast/toast';
 
 @Component({
   selector: 'app-admin-laboratories',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Toast],
   templateUrl: './admin-laboratories.component.html',
   styleUrls: ['./admin-laboratories.component.css'],
 })
@@ -17,6 +24,9 @@ export class AdminLaboratoriesComponent implements OnInit {
   editLab: Laboratory | null = null;
   saving = false;
   deletingId: number | null = null;
+  toastMsg: string = '';
+  showToast: boolean = false;
+  toastType: 'success' | 'error' = 'success';
 
   createForm: FormGroup;
   searchTerm = signal<string>('');
@@ -29,6 +39,20 @@ export class AdminLaboratoriesComponent implements OnInit {
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
     });
+  }
+
+  showSuccess(msg: string) {
+    this.toastMsg = msg;
+    this.showToast = true;
+    this.toastType = 'success';
+    setTimeout(() => (this.showToast = false), 3000);
+  }
+
+  showError(msg: string) {
+    this.toastMsg = msg;
+    this.toastType = 'error';
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 3000);
   }
 
   ngOnInit() {
@@ -77,10 +101,11 @@ export class AdminLaboratoriesComponent implements OnInit {
         this.laboratories = this.laboratories.map((l) => (l.id === updated.id ? updated : l));
         this.editLab = null;
         this.saving = false;
+        this.showSuccess('Laboratorio actualizado');
       },
-      error: (err) => {
-        this.errorMsg = typeof err?.error === 'string' ? err.error : 'Error al actualizar';
+      error: () => {
         this.saving = false;
+        this.showError('Error al actualizar laboratorio');
       },
     });
   }
@@ -95,10 +120,11 @@ export class AdminLaboratoriesComponent implements OnInit {
         this.laboratories = [newLab, ...this.laboratories];
         this.createForm.reset();
         this.saving = false;
+        this.showSuccess('Laboratorio creado');
       },
-      error: (err) => {
-        this.errorMsg = typeof err?.error === 'string' ? err.error : 'Error al crear laboratorio';
+      error: () => {
         this.saving = false;
+        this.showError('Error al crear laboratorio');
       },
     });
   }
@@ -110,10 +136,11 @@ export class AdminLaboratoriesComponent implements OnInit {
       next: () => {
         this.laboratories = this.laboratories.filter((l) => l.id !== id);
         this.deletingId = null;
+        this.showSuccess('Laboratorio eliminado');
       },
       error: () => {
-        this.errorMsg = 'Error al eliminar laboratorio';
         this.deletingId = null;
+        this.showError('Error al eliminar laboratorio');
       },
     });
   }

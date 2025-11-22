@@ -6,11 +6,12 @@ import { firstValueFrom } from 'rxjs';
 import { User } from '../../model/User';
 import { UserService } from '../../service/UserService';
 import { AuthService } from '../../service/AuthService';
+import { Toast } from '../../components/toast/toast';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, Toast],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })
@@ -20,7 +21,10 @@ export class Profile implements OnInit {
   canEdit = true;
   user: User | null = null;
   loading = false;
-  errorMsg = '';
+
+  toastMsg: string = '';
+  showToast: boolean = false;
+  toastType: 'success' | 'error' = 'success';
 
   constructor(
     private readonly fb: FormBuilder,
@@ -43,15 +47,12 @@ export class Profile implements OnInit {
 
   private async loadCurrentUser() {
     this.loading = true;
-    this.errorMsg = '';
     try {
-      // Intentar primero con el id almacenado al hacer login
       const storedId = this.auth.getUserId?.();
       let apiUser: User | undefined;
       if (storedId) {
         apiUser = await firstValueFrom(this.userService.getById(storedId));
       }
-      // Fallback: buscar por username si no hay id
       if (!apiUser) {
         let username = this.auth.getUsername();
         if (!username) {
@@ -59,17 +60,16 @@ export class Profile implements OnInit {
           username = this.getUsernameFromToken(token);
         }
         if (!username) {
-          this.errorMsg = 'No se pudo identificar el usuario';
+          this.showError('No se pudo identificar el usuario');
           return;
         }
         apiUser = await firstValueFrom(this.userService.getByUsername(username));
         if (!apiUser) {
-          this.errorMsg = 'Usuario no encontrado';
+          this.showError('Usuario no encontrado');
           return;
         }
       }
       this.user = apiUser;
-      console.log('[Profile] Usuario cargado:', apiUser);
       this.profileForm.patchValue({
         name: apiUser.name,
         lastName: apiUser.firstLastname,
@@ -79,7 +79,7 @@ export class Profile implements OnInit {
         email: apiUser.email,
       });
     } catch {
-      this.errorMsg = 'Error al cargar usuario';
+      this.showError('Error al cargar usuario');
     } finally {
       this.loading = false;
     }
@@ -121,7 +121,6 @@ export class Profile implements OnInit {
     this.profileForm.markAllAsTouched();
     if (this.profileForm.invalid || !this.user) return;
     this.loading = true;
-    this.errorMsg = '';
     try {
       const raw = this.profileForm.getRawValue();
       const payload: Partial<User> = {
@@ -134,20 +133,33 @@ export class Profile implements OnInit {
         email: this.user.email,
         role: this.user.role ?? '',
       };
-      console.log('[Profile] Payload actualización (enviado):', payload);
       const updated = await firstValueFrom(this.userService.update(this.user.id, payload));
       this.user = updated;
-      console.log('[Profile] Usuario actualizado:', updated);
       this.profileForm.patchValue({
         name: updated.name,
         lastName: updated.firstLastname,
         secondLastName: updated.secondLastname,
         userName: updated.username,
       });
+      this.showSuccess('Perfil actualizado correctamente');
     } catch (err: any) {
-      this.errorMsg = typeof err?.error === 'string' ? err.error : 'Error al actualizar perfil';
+      this.showError(typeof err?.error === 'string' ? err.error : 'Error al actualizar perfil');
     } finally {
       this.loading = false;
     }
+  }
+
+  showSuccess(msg: string) {
+    this.toastMsg = msg;
+    this.toastType = 'success';
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 3000);
+  }
+
+  showError(msg: string) {
+    this.toastMsg = msg;
+    this.toastType = 'error';
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 3000);
   }
 }
