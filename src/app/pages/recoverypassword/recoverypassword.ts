@@ -81,17 +81,21 @@ export class Recoverypassword {
       return;
     }
 
-    const newPass = this.newPassword.value; 
+    const oldPass = this.currentPassword.value;
+    const newPass = this.newPassword.value;
     this.loading = true;
-    this.userService.changePassword(id, newPass).subscribe({
+    this.userService.changePassword(id, oldPass, newPass).subscribe({
       next: () => {
         this.successMsg = 'Contraseña actualizada correctamente.';
         this.passwordForm.reset();
         this.isSubmitted = false;
         this.loading = false;
       },
-      error: () => {
-        this.errorMsg = 'No se pudo actualizar la contraseña.';
+      error: (err) => {
+        this.errorMsg =
+          err.status === 400
+            ? 'La contraseña actual es incorrecta.'
+            : 'No se pudo actualizar la contraseña.';
         this.loading = false;
       },
     });

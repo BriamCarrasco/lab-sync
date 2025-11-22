@@ -36,7 +36,10 @@ export class UserService {
     return this.http.put<User>(`${this.base}/${id}`, user);
   }
 
-  changePassword(id: number, newPassword: string): Observable<void> {
-    return this.http.patch<void>(`${this.base}/${id}/password`, { newPassword });
+  changePassword(id: number, oldPassword: string, newPassword: string): Observable<void> {
+    return this.http.patch<void>(`${this.base}/${id}/password`, {
+      oldPassword,
+      newPassword,
+    });
   }
 }
