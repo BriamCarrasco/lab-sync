@@ -11,6 +11,15 @@ import { authInterceptor } from './service/auth.interceptor';
 
 import { routes } from './app.routes';
 
+/**
+ * Configuración principal de la aplicación Angular.
+ *
+ * Define los proveedores globales, rutas, animaciones, notificaciones,
+ * interceptores HTTP y manejo de errores para la aplicación.
+ *
+ * @constant
+ * @type {ApplicationConfig}
+ */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),

@@ -2,6 +2,15 @@ import { Routes } from '@angular/router';
 import { adminRoleCanMatch } from './core/admin-role.guard';
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 
+/**
+ * Rutas del módulo de administración.
+ *
+ * Define las rutas protegidas por el guard de rol de administrador y los componentes
+ * que se cargan para cada sección administrativa: inicio, usuarios y laboratorios.
+ *
+ * @constant
+ * @type {Routes}
+ */
 export const adminRoutes: Routes = [
   {
     path: '',

@@ -2,6 +2,18 @@ import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './AuthService';
 
+/**
+ * Guard de autenticación para rutas protegidas.
+ *
+ * Verifica si el usuario está autenticado y, opcionalmente, si tiene los roles requeridos
+ * para acceder a la ruta. Redirige al login si no está autenticado, o a la página principal
+ * si no tiene el rol necesario.
+ *
+ * @guard
+ * @param route Información de la ruta activada.
+ * @param state Estado del router.
+ * @returns true si el acceso está permitido, o una UrlTree para redirección.
+ */
 export const authGuard: CanActivateFn = (route, state) => {
   const auth = inject(AuthService);
   const router = inject(Router);

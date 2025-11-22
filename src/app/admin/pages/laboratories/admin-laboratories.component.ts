@@ -10,6 +10,14 @@ import {
 import { LaboratoriesService, Laboratory } from '../../service/laboratories';
 import { Toast } from '../../../components/toast/toast';
 
+/**
+ * Componente de administración de laboratorios.
+ *
+ * Permite listar, buscar, crear, editar y eliminar laboratorios en el módulo de administración.
+ * Muestra mensajes de éxito o error mediante un toast.
+ *
+ * @component
+ */
 @Component({
   selector: 'app-admin-laboratories',
   standalone: true,
@@ -18,19 +26,35 @@ import { Toast } from '../../../components/toast/toast';
   styleUrls: ['./admin-laboratories.component.css'],
 })
 export class AdminLaboratoriesComponent implements OnInit {
+  /** Listado de laboratorios */
   laboratories: Laboratory[] = [];
+  /** Indica si está cargando laboratorios */
   loading = false;
+  /** Mensaje de error */
   errorMsg = '';
+  /** Laboratorio en edición */
   editLab: Laboratory | null = null;
+  /** Indica si está guardando cambios */
   saving = false;
+  /** ID del laboratorio en proceso de eliminación */
   deletingId: number | null = null;
+  /** Mensaje a mostrar en el toast */
   toastMsg: string = '';
+  /** Indica si el toast está visible */
   showToast: boolean = false;
+  /** Tipo de toast ('success' | 'error') */
   toastType: 'success' | 'error' = 'success';
 
+  /** Formulario reactivo para crear laboratorio */
   createForm: FormGroup;
+  /** Término de búsqueda para filtrar laboratorios */
   searchTerm = signal<string>('');
 
+  /**
+   * Constructor del componente.
+   * @param fb FormBuilder para crear formularios.
+   * @param labsService Servicio de laboratorios.
+   */
   constructor(private readonly fb: FormBuilder, private readonly labsService: LaboratoriesService) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],
@@ -41,6 +65,10 @@ export class AdminLaboratoriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Muestra un mensaje de éxito en el toast.
+   * @param msg Mensaje a mostrar.
+   */
   showSuccess(msg: string) {
     this.toastMsg = msg;
     this.showToast = true;
@@ -48,6 +76,10 @@ export class AdminLaboratoriesComponent implements OnInit {
     setTimeout(() => (this.showToast = false), 3000);
   }
 
+  /**
+   * Muestra un mensaje de error en el toast.
+   * @param msg Mensaje a mostrar.
+   */
   showError(msg: string) {
     this.toastMsg = msg;
     this.toastType = 'error';
@@ -55,10 +87,16 @@ export class AdminLaboratoriesComponent implements OnInit {
     setTimeout(() => (this.showToast = false), 3000);
   }
 
+  /**
+   * Inicializa el componente y carga los laboratorios.
+   */
   ngOnInit() {
     this.loadLabs();
   }
 
+  /**
+   * Carga el listado de laboratorios desde el servicio.
+   */
   loadLabs() {
     this.loading = true;
     this.errorMsg = '';
@@ -74,6 +112,10 @@ export class AdminLaboratoriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Filtra los laboratorios según el término de búsqueda.
+   * @returns Laboratorios filtrados.
+   */
   filteredLabs(): Laboratory[] {
     const term = this.searchTerm().trim().toLowerCase();
     if (!term) return this.laboratories;
@@ -85,14 +127,24 @@ export class AdminLaboratoriesComponent implements OnInit {
     );
   }
 
+  /**
+   * Inicia la edición de un laboratorio.
+   * @param lab Laboratorio a editar.
+   */
   startEdit(lab: Laboratory) {
     this.editLab = { ...lab };
   }
 
+  /**
+   * Cancela la edición de laboratorio.
+   */
   cancelEdit() {
     this.editLab = null;
   }
 
+  /**
+   * Guarda los cambios del laboratorio editado.
+   */
   saveEdit() {
     if (!this.editLab) return;
     this.saving = true;
@@ -110,6 +162,9 @@ export class AdminLaboratoriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Crea un nuevo laboratorio.
+   */
   createLab() {
     this.createForm.markAllAsTouched();
     if (this.createForm.invalid) return;
@@ -129,6 +184,10 @@ export class AdminLaboratoriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Elimina un laboratorio por su ID.
+   * @param id Identificador del laboratorio.
+   */
   deleteLab(id: number) {
     if (!confirm('¿Eliminar laboratorio?')) return;
     this.deletingId = id;
@@ -145,6 +204,12 @@ export class AdminLaboratoriesComponent implements OnInit {
     });
   }
 
+  /**
+   * Función de seguimiento para ngFor por ID.
+   * @param index Índice.
+   * @param item Laboratorio.
+   * @returns ID del laboratorio.
+   */
   trackById(index: number, item: Laboratory) {
     return item.id;
   }

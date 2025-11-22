@@ -8,6 +8,15 @@ import { UserService } from '../../service/UserService';
 import { AuthService } from '../../service/AuthService';
 import { Toast } from '../../components/toast/toast';
 
+/**
+ * Componente de perfil de usuario.
+ *
+ * Permite al usuario visualizar y editar sus datos personales.
+ * Valida los datos y muestra mensajes de éxito o error mediante un toast.
+ * Carga los datos del usuario autenticado y actualiza el perfil mediante el servicio.
+ *
+ * @component
+ */
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -16,16 +25,46 @@ import { Toast } from '../../components/toast/toast';
   styleUrls: ['./profile.css'],
 })
 export class Profile implements OnInit {
+  /**
+   * Formulario reactivo de perfil.
+   */
   profileForm: FormGroup;
+  /**
+   * Indica si el formulario fue enviado.
+   */
   isSubmitted = false;
+  /**
+   * Indica si el usuario puede editar el perfil.
+   */
   canEdit = true;
+  /**
+   * Usuario autenticado cargado.
+   */
   user: User | null = null;
+  /**
+   * Indica si está en proceso de carga o actualización.
+   */
   loading = false;
 
+  /**
+   * Mensaje a mostrar en el toast.
+   */
   toastMsg: string = '';
+  /**
+   * Indica si el toast está visible.
+   */
   showToast: boolean = false;
+  /**
+   * Tipo de toast ('success' | 'error').
+   */
   toastType: 'success' | 'error' = 'success';
 
+  /**
+   * Constructor del componente.
+   * @param fb FormBuilder para crear el formulario.
+   * @param userService Servicio de usuario.
+   * @param auth Servicio de autenticación.
+   */
   constructor(
     private readonly fb: FormBuilder,
     private readonly userService: UserService,
@@ -41,10 +80,17 @@ export class Profile implements OnInit {
     });
   }
 
+  /**
+   * Inicializa el componente y carga los datos del usuario.
+   */
   ngOnInit(): void {
     this.loadCurrentUser();
   }
 
+  /**
+   * Carga los datos del usuario autenticado.
+   * Busca por ID o por nombre de usuario.
+   */
   private async loadCurrentUser() {
     this.loading = true;
     try {
@@ -85,6 +131,11 @@ export class Profile implements OnInit {
     }
   }
 
+  /**
+   * Extrae el nombre de usuario desde el token JWT.
+   * @param token Token JWT.
+   * @returns Nombre de usuario o null.
+   */
   private getUsernameFromToken(token: string | null): string | null {
     if (!token) return null;
     try {
@@ -97,25 +148,36 @@ export class Profile implements OnInit {
     }
   }
 
+  /** Getter para el campo nombre */
   get name() {
     return this.profileForm.get('name');
   }
+  /** Getter para el campo primer apellido */
   get lastName() {
     return this.profileForm.get('lastName');
   }
+  /** Getter para el campo segundo apellido */
   get secondLastName() {
     return this.profileForm.get('secondLastName');
   }
+  /** Getter para el campo usuario */
   get userName() {
     return this.profileForm.get('userName');
   }
+  /** Getter para el campo rut */
   get rut() {
     return this.profileForm.get('rut');
   }
+  /** Getter para el campo email */
   get email() {
     return this.profileForm.get('email');
   }
 
+  /**
+   * Envía el formulario para actualizar el perfil.
+   * Valida los datos y realiza la petición al backend.
+   * Muestra mensajes de éxito o error según la respuesta.
+   */
   async onSubmit() {
     this.isSubmitted = true;
     this.profileForm.markAllAsTouched();
@@ -149,6 +211,10 @@ export class Profile implements OnInit {
     }
   }
 
+  /**
+   * Muestra un mensaje de éxito en el toast.
+   * @param msg Mensaje a mostrar.
+   */
   showSuccess(msg: string) {
     this.toastMsg = msg;
     this.toastType = 'success';
@@ -156,6 +222,10 @@ export class Profile implements OnInit {
     setTimeout(() => (this.showToast = false), 3000);
   }
 
+  /**
+   * Muestra un mensaje de error en el toast.
+   * @param msg Mensaje a mostrar.
+   */
   showError(msg: string) {
     this.toastMsg = msg;
     this.toastType = 'error';

@@ -14,6 +14,14 @@ import { UserService } from '../../service/UserService';
 import { AuthService } from '../../service/AuthService';
 import { Toast } from '../../components/toast/toast';
 
+/**
+ * Validador de complejidad de contraseña.
+ *
+ * Verifica que la contraseña tenga al menos 8 caracteres, un número,
+ * una letra mayúscula, una minúscula y un carácter especial.
+ *
+ * @returns ValidatorFn
+ */
 function passwordComplexityValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value as string;
@@ -34,6 +42,14 @@ function passwordComplexityValidator(): ValidatorFn {
   };
 }
 
+/**
+ * Componente para la recuperación y cambio de contraseña de usuario.
+ *
+ * Permite al usuario cambiar su contraseña validando los datos y mostrando mensajes
+ * de éxito o error mediante un toast. Valida la complejidad y coincidencia de las contraseñas.
+ *
+ * @component
+ */
 @Component({
   selector: 'app-recoverypassword',
   standalone: true,
@@ -42,46 +58,85 @@ function passwordComplexityValidator(): ValidatorFn {
   styleUrl: './recoverypassword.css',
 })
 export class Recoverypassword {
+  /**
+   * Validador para verificar que las contraseñas nuevas coincidan.
+   */
   passwordsMatch: ValidatorFn = (control: AbstractControl) => {
     const newPass = control.get('newPassword')?.value;
     const repeatPass = control.get('repeatPassword')?.value;
     return newPass === repeatPass ? null : { mismatch: true };
   };
 
+  /**
+   * Formulario reactivo para el cambio de contraseña.
+   */
   passwordForm!: FormGroup<{
     currentPassword: FormControl<string>;
     newPassword: FormControl<string>;
     repeatPassword: FormControl<string>;
   }>;
 
+  /**
+   * Indica si el formulario fue enviado.
+   */
   isSubmitted = false;
+  /**
+   * Mensaje de error.
+   */
   errorMsg: string | null = null;
+  /**
+   * Mensaje de éxito.
+   */
   successMsg: string | null = null;
+  /**
+   * Indica si está en proceso de cambio de contraseña.
+   */
   loading = false;
 
+  /**
+   * Mensaje a mostrar en el toast.
+   */
   toastMsg: string = '';
+  /**
+   * Indica si el toast está visible.
+   */
   showToast: boolean = false;
+  /**
+   * Tipo de toast ('success' | 'error').
+   */
   toastType: 'success' | 'error' = 'success';
 
+  /** Valor actual de la nueva contraseña */
   get newPasswordValue(): string {
     return this.newPassword.value || '';
   }
+  /** Valida longitud mínima de la nueva contraseña */
   get newPasswordHasMinLength(): boolean {
     return this.newPasswordValue.length >= 8;
   }
+  /** Valida si la nueva contraseña tiene número */
   get newPasswordHasNumber(): boolean {
     return /\d/.test(this.newPasswordValue);
   }
+  /** Valida si la nueva contraseña tiene mayúscula */
   get newPasswordHasUpper(): boolean {
     return /[A-Z]/.test(this.newPasswordValue);
   }
+  /** Valida si la nueva contraseña tiene minúscula */
   get newPasswordHasLower(): boolean {
     return /[a-z]/.test(this.newPasswordValue);
   }
+  /** Valida si la nueva contraseña tiene carácter especial */
   get newPasswordHasSpecial(): boolean {
     return /[!@#$%^&*(),.?':{}|<>_\-+=~`[\]\\;/]/.test(this.newPasswordValue);
   }
 
+  /**
+   * Constructor del componente.
+   * @param fb FormBuilder para crear el formulario.
+   * @param userService Servicio de usuario.
+   * @param auth Servicio de autenticación.
+   */
   constructor(
     private readonly fb: FormBuilder,
     private readonly userService: UserService,
@@ -100,16 +155,23 @@ export class Recoverypassword {
     );
   }
 
+  /** Getter para el campo contraseña actual */
   get currentPassword(): FormControl<string> {
     return this.passwordForm.controls.currentPassword;
   }
+  /** Getter para el campo nueva contraseña */
   get newPassword(): FormControl<string> {
     return this.passwordForm.controls.newPassword;
   }
+  /** Getter para el campo repetir contraseña */
   get repeatPassword(): FormControl<string> {
     return this.passwordForm.controls.repeatPassword;
   }
 
+  /**
+   * Muestra un mensaje de éxito en el toast.
+   * @param msg Mensaje a mostrar.
+   */
   showSuccess(msg: string) {
     this.toastMsg = msg;
     this.showToast = true;
@@ -117,6 +179,10 @@ export class Recoverypassword {
     setTimeout(() => (this.showToast = false), 3000);
   }
 
+  /**
+   * Muestra un mensaje de error en el toast.
+   * @param msg Mensaje a mostrar.
+   */
   showError(msg: string) {
     this.toastMsg = msg;
     this.toastType = 'error';
@@ -124,6 +190,11 @@ export class Recoverypassword {
     setTimeout(() => (this.showToast = false), 3000);
   }
 
+  /**
+   * Envía el formulario para cambiar la contraseña.
+   * Valida los datos y realiza la petición al backend.
+   * Muestra mensajes de éxito o error según la respuesta.
+   */
   onSubmit() {
     this.isSubmitted = true;
     this.errorMsg = null;
