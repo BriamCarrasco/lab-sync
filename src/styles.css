@@ -71,3 +71,17 @@ body, app-root {
 .main-content {
   flex: 1 0 auto;
 }
+
+.password-rules {
+  list-style: none;
+  padding-left: 0;
+  font-size: 0.95em;
+}
+.password-rules li {
+  color: #198754;
+}
+.password-rules .text-danger {
+  color: #dc3545;
+}
+
+

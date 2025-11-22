@@ -147,6 +147,13 @@
             isSubmitted)) {
             <div class="invalid-feedback d-block">La contraseña es obligatoria.</div>
             }
+            <ul class="password-rules mt-2 mb-0">
+              <li [class.text-danger]="!passwordHasMinLength">Mínimo 8 caracteres</li>
+              <li [class.text-danger]="!passwordHasNumber">Al menos un número</li>
+              <li [class.text-danger]="!passwordHasUpper">Al menos una mayúscula</li>
+              <li [class.text-danger]="!passwordHasLower">Al menos una minúscula</li>
+              <li [class.text-danger]="!passwordHasSpecial">Al menos un símbolo especial</li>
+            </ul>
           </div>
           <div class="d-flex justify-content-between">
             <button

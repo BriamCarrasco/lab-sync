@@ -7,11 +7,32 @@ import {
   ReactiveFormsModule,
   ValidatorFn,
   AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../service/UserService';
 import { AuthService } from '../../service/AuthService';
 import { Toast } from '../../components/toast/toast';
+
+function passwordComplexityValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value as string;
+    if (!value) return null;
+
+    const minLength = value.length >= 8;
+    const hasNumber = /\d/.test(value);
+    const hasUpper = /[A-Z]/.test(value);
+    const hasLower = /[a-z]/.test(value);
+    const hasSpecial = /[!@#$%^&*(),.?':{}|<>_\-+=~`[\]\\;/]/.test(value);
+
+    if (minLength && hasNumber && hasUpper && hasLower && hasSpecial) {
+      return null;
+    }
+    return {
+      passwordComplexity: true,
+    };
+  };
+}
 
 @Component({
   selector: 'app-recoverypassword',
@@ -42,6 +63,25 @@ export class Recoverypassword {
   showToast: boolean = false;
   toastType: 'success' | 'error' = 'success';
 
+  get newPasswordValue(): string {
+    return this.newPassword.value || '';
+  }
+  get newPasswordHasMinLength(): boolean {
+    return this.newPasswordValue.length >= 8;
+  }
+  get newPasswordHasNumber(): boolean {
+    return /\d/.test(this.newPasswordValue);
+  }
+  get newPasswordHasUpper(): boolean {
+    return /[A-Z]/.test(this.newPasswordValue);
+  }
+  get newPasswordHasLower(): boolean {
+    return /[a-z]/.test(this.newPasswordValue);
+  }
+  get newPasswordHasSpecial(): boolean {
+    return /[!@#$%^&*(),.?':{}|<>_\-+=~`[\]\\;/]/.test(this.newPasswordValue);
+  }
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly userService: UserService,
@@ -50,7 +90,10 @@ export class Recoverypassword {
     this.passwordForm = this.fb.nonNullable.group(
       {
         currentPassword: ['', Validators.required],
-        newPassword: ['', [Validators.required, Validators.minLength(5)]],
+        newPassword: [
+          '',
+          [Validators.required, Validators.minLength(8), passwordComplexityValidator()],
+        ],
         repeatPassword: ['', Validators.required],
       },
       { validators: this.passwordsMatch }
@@ -89,16 +132,18 @@ export class Recoverypassword {
 
     if (this.passwordForm.invalid) {
       if (this.passwordForm.errors?.['mismatch']) {
-        this.errorMsg = 'Las contraseñas nuevas no coinciden.';
-        this.showError(this.errorMsg);
+        this.showError('Las contraseñas nuevas no coinciden.');
+      } else if (this.newPassword.errors?.['passwordComplexity']) {
+        this.showError(
+          'La contraseña debe tener al menos 8 caracteres, contener una mayúscula, una minúscula, un número y un símbolo especial.'
+        );
       }
       return;
     }
 
     const id = this.auth.getUserId?.();
     if (!id) {
-      this.errorMsg = 'No se pudo identificar el usuario.';
-      this.showError(this.errorMsg);
+      this.showError('No se pudo identificar el usuario.');
       return;
     }
 
@@ -107,18 +152,17 @@ export class Recoverypassword {
     this.loading = true;
     this.userService.changePassword(id, oldPass, newPass).subscribe({
       next: () => {
-        this.successMsg = 'Contraseña actualizada correctamente.';
         this.passwordForm.reset();
         this.isSubmitted = false;
         this.loading = false;
-        this.showSuccess(this.successMsg);
+        this.showSuccess('Contraseña actualizada correctamente.');
       },
       error: (err) => {
-        this.errorMsg =
+        this.showError(
           err.status === 400
             ? 'La contraseña actual es incorrecta.'
-            : 'No se pudo actualizar la contraseña.';
-        this.showError(this.errorMsg);
+            : 'No se pudo actualizar la contraseña.'
+        );
         this.loading = false;
       },
     });

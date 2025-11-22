@@ -1,9 +1,37 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, RegisterRequest } from '../../service/AuthService';
 import { Toast } from '../../components/toast/toast';
+
+function passwordComplexityValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value as string;
+    if (!value) return null;
+
+    const minLength = value.length >= 8;
+    const hasNumber = /\d/.test(value);
+    const hasUpper = /[A-Z]/.test(value);
+    const hasLower = /[a-z]/.test(value);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=~`[\]\\;/]/.test(value);
+
+    if (minLength && hasNumber && hasUpper && hasLower && hasSpecial) {
+      return null;
+    }
+    return {
+      passwordComplexity: true,
+    };
+  };
+}
 
 @Component({
   selector: 'app-register',
@@ -34,7 +62,7 @@ export class Register {
       rut: ['', [Validators.required, Validators.pattern(/^\d{7,8}-[\dkK]$/)]],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(5)]],
+      password: ['', [Validators.required, Validators.minLength(8), passwordComplexityValidator()]],
     });
   }
 
@@ -58,6 +86,25 @@ export class Register {
   }
   get password() {
     return this.registerForm.get('password');
+  }
+
+  get passwordValue(): string {
+    return this.password?.value || '';
+  }
+  get passwordHasMinLength(): boolean {
+    return this.passwordValue.length >= 8;
+  }
+  get passwordHasNumber(): boolean {
+    return /\d/.test(this.passwordValue);
+  }
+  get passwordHasUpper(): boolean {
+    return /[A-Z]/.test(this.passwordValue);
+  }
+  get passwordHasLower(): boolean {
+    return /[a-z]/.test(this.passwordValue);
+  }
+  get passwordHasSpecial(): boolean {
+    return /[!@#$%^&*(),.?':{}|<>_\-+=~`[\]\\;/]/.test(this.passwordValue);
   }
 
   nextStep() {
