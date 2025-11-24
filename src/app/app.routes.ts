@@ -6,6 +6,7 @@ import { Home } from './pages/home/home';
 import { Profile } from './pages/profile/profile';
 import { authGuard } from './service/auth.guard';
 import { Recoverypassword } from './pages/recoverypassword/recoverypassword';
+import { Forgotpassword } from './pages/forgotpassword/forgotpassword';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'home', component: Home, canActivate: [authGuard] },
   { path: 'profile', component: Profile, canActivate: [authGuard] },
   { path: 'recoverypassword', component: Recoverypassword },
+  { path: 'forgotpassword', component: Forgotpassword },
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes').then((m) => m.adminRoutes),
