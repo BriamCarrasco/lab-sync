@@ -1,59 +1,103 @@
 # LabSync
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.10.
+LabSync es una aplicación web desarrollada con Angular para la gestión de laboratorios y resultados de análisis clínicos. Permite a los usuarios agendar citas, consultar resultados y solicitar nuevos exámenes de manera sencilla y segura.
 
-## Development server
+## Tabla de contenidos
 
-To start a local development server, run:
+- [Características](#características)
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [Desarrollo](#desarrollo)
+- [Pruebas](#pruebas)
+- [Despliegue con Docker](#despliegue-con-docker)
+- [Recursos adicionales](#recursos-adicionales)
+
+## Características
+
+- Registro y autenticación de usuarios
+- Recuperación de contraseña por correo electrónico
+- Gestión de laboratorios y usuarios (panel de administración)
+- Consulta de resultados y solicitud de análisis clínicos
+- Interfaz moderna y responsiva
+
+## Requisitos
+
+- Node.js >= 18.x
+- npm >= 9.x
+- Angular CLI >= 20.x
+
+## Instalación
+
+Clona el repositorio y navega al directorio del proyecto:
+
+```bash
+git clone https://github.com/BriamCarrasco/lab-sync.git
+cd lab-sync
+```
+
+Instala las dependencias:
+
+```bash
+npm install
+```
+
+## Uso
+
+Para iniciar el servidor de desarrollo:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Accede a la aplicación en [http://localhost:4200](http://localhost:4200).
 
-## Code scaffolding
+## Desarrollo
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Para generar un nuevo componente, servicio, módulo, etc.:
 
 ```bash
-ng generate component component-name
+ng generate <schematic> <name>
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Ejemplo:
+
+```bash
+ng generate component ejemplo
+```
+
+Consulta todos los esquemas disponibles:
 
 ```bash
 ng generate --help
 ```
 
-## Building
+## Pruebas
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Ejecuta las pruebas unitarias:
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Ejecuta pruebas end-to-end (e2e):
 
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Despliegue con Docker
 
-## Additional Resources
+Para construir y levantar la aplicación en un contenedor Docker:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+docker build -t lab-sync .
+docker run -p 4200:4200 lab-sync
+```
+
+Accede a [http://localhost:4200](http://localhost:4200) en tu navegador.
+
+## Recursos adicionales
+
+- [Angular CLI - Documentación oficial](https://angular.dev/tools/cli)
+- [Guía Angular](https://angular.dev/guide)

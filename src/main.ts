@@ -6,7 +6,6 @@
  *
  * @file main.ts
  * @author Briam
- * @see {@link https://angular.io/api/platform-browser/bootstrapApplication}
  */
 
 import { bootstrapApplication } from '@angular/platform-browser';
