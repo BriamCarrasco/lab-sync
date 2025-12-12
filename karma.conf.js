@@ -16,13 +16,16 @@ function karmaConfig(config) {
       suppressAll: true,
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage'),
+      dir: require('node:path').join(__dirname, './coverage'),
       subdir: '.',
       reporters: [
         { type: 'html', subdir: 'html' },
         { type: 'text-summary' },
         { type: 'lcovonly', subdir: '.', file: 'lcov.info' },
       ],
+    },
+    proxies: {
+      '/assets/': '/base/src/assets/',
     },
     reporters: ['progress', 'kjhtml', 'coverage'],
     port: 9876,
