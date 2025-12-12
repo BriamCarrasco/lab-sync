@@ -2,6 +2,9 @@ function karmaConfig(config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    files: [
+      { pattern: 'src/assets/**/*', watched: false, included: false, served: true, nocache: false },
+    ],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
