@@ -1,0 +1,6 @@
+projectKey=LabSync
+serverUrl=http://localhost:9000
+serverVersion=25.10.0.114319
+dashboardUrl=http://localhost:9000/dashboard?id=LabSync
+ceTaskId=085bef29-9238-4c3c-a83b-c5a484914b20
+ceTaskUrl=http://localhost:9000/api/ce/task?id=085bef29-9238-4c3c-a83b-c5a484914b20

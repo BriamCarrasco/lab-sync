@@ -1,5 +1,3 @@
-//Karma configuration file
-
 function karmaConfig(config) {
   config.set({
     basePath: '',
@@ -9,7 +7,6 @@ function karmaConfig(config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
       jasmine: {},
@@ -19,20 +16,15 @@ function karmaConfig(config) {
       suppressAll: true,
     },
     coverageReporter: {
-      dir: require('node:path').join(__dirname, './coverage'),
+      dir: require('path').join(__dirname, './coverage'),
       subdir: '.',
       reporters: [
-        {
-          type: 'html',
-          subdir: 'html-report',
-        },
-        {
-          type: 'lcov',
-          subdir: 'lcov-report',
-        },
+        { type: 'html', subdir: 'html' },
+        { type: 'text-summary' },
+        { type: 'lcovonly', subdir: '.', file: 'lcov.info' },
       ],
     },
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['progress', 'kjhtml', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

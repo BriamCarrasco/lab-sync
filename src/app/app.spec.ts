@@ -5,6 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ToastrService } from 'ngx-toastr';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -32,5 +33,14 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('app-topbar')).toBeTruthy();
     expect(compiled.querySelector('app-footer')).toBeTruthy();
+  });
+
+  it('should call toastr.success when showToast is called', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    const toastr = TestBed.inject(ToastrService);
+    spyOn(toastr, 'success');
+    app.showToast();
+    expect(toastr.success).toHaveBeenCalledWith('Operación exitosa', 'OK');
   });
 });

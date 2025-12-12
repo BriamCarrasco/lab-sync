@@ -54,7 +54,7 @@ export class UserService {
           users.find((u: any) => u.userName === username) ||
           users.find((u: any) => u.username === username) ||
           users.find(
-            (u: any) => (u.userName || u.username || '').toLowerCase() === username.toLowerCase()
+            (u: any) => (u.userName || u.username).toLowerCase() === username.toLowerCase()
           )
         );
       })

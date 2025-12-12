@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Landing } from './landing';
 
 describe('Landing', () => {
@@ -8,9 +7,8 @@ describe('Landing', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Landing]
-    })
-    .compileComponents();
+      imports: [Landing],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Landing);
     component = fixture.componentInstance;
@@ -19,5 +17,12 @@ describe('Landing', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render the landing template', () => {
+    const landingEl: HTMLElement = fixture.nativeElement;
+    // Verifica que el elemento principal exista
+    expect(landingEl).toBeTruthy();
+    // Puedes agregar más asserts si el template tiene contenido específico
   });
 });
