@@ -1,0 +1,192 @@
+<app-toast [message]="toastMsg" [show]="showToast" [type]="toastType"></app-toast>
+<section class="analysis-content">
+  <h2 class="mb-3">Administración de Análisis</h2>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar (ID, usuario, laboratorio, estado)"
+        (input)="searchTerm.set($any($event.target).value)"
+      />
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Crear nuevo análisis</h5>
+      <form [formGroup]="createForm" (ngSubmit)="createAnalysis()">
+        <div class="row g-2">
+          <div class="col-md-4">
+            <select formControlName="laboratoryId" class="form-control">
+              <option value="" disabled selected>Seleccionar Laboratorio</option>
+              <option *ngFor="let lab of laboratories" [value]="lab.id">{{ lab.name }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select formControlName="userId" class="form-control">
+              <option value="" disabled selected>Seleccionar Usuario</option>
+              <option *ngFor="let user of users" [value]="user.id">
+                {{ user.name }} {{ user.firstLastname }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select formControlName="status" class="form-control">
+              <option value="PENDIENTE">PENDIENTE</option>
+              <option value="EN_PROCESO">EN PROCESO</option>
+              <option value="COMPLETADO">COMPLETADO</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-3">
+          <button
+            class="btn btn-main"
+            [ngClass]="{ 'text-white': !saving && !createForm.invalid }"
+            type="submit"
+            [disabled]="saving || createForm.invalid"
+          >
+            {{ saving ? 'Guardando...' : 'Crear análisis' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="loading">Cargando análisis...</div>
+  <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+
+  <table class="table table-sm" *ngIf="!loading && filteredAnalysis().length">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Laboratorio</th>
+        <th>Usuario</th>
+        <th>Estado</th>
+        <th>Fecha Creación</th>
+        <th style="width: 240px">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of filteredAnalysis(); trackBy: trackById">
+        <ng-container *ngIf="editAnalysis && editAnalysis.id === a.id; else viewRow">
+          <td>{{ a.id }}</td>
+          <td>
+            <select [(ngModel)]="editAnalysis.laboratoryId" class="form-control form-control-sm">
+              <option *ngFor="let lab of laboratories" [value]="lab.id">{{ lab.name }}</option>
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="editAnalysis.userId" class="form-control form-control-sm">
+              <option *ngFor="let user of users" [value]="user.id">
+                {{ user.name }} {{ user.firstLastname }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="editAnalysis.status" class="form-control form-control-sm">
+              <option value="PENDIENTE">PENDIENTE</option>
+              <option value="EN_PROCESO">EN PROCESO</option>
+              <option value="COMPLETADO">COMPLETADO</option>
+            </select>
+          </td>
+          <td>{{ a.createdAt | date : 'short' }}</td>
+          <td>
+            <button class="btn btn-sm btn-main me-1" (click)="saveEdit()" [disabled]="saving">
+              Guardar
+            </button>
+            <button class="btn btn-sm btn-secondary-m" (click)="cancelEdit()" [disabled]="saving">
+              Cancelar
+            </button>
+          </td>
+        </ng-container>
+        <ng-template #viewRow>
+          <td>{{ a.id }}</td>
+          <td>{{ getLaboratoryName(a.laboratoryId) }}</td>
+          <td>{{ getUserName(a.userId) }}</td>
+          <td>
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-warning': a.status === 'PENDIENTE',
+                'bg-info': a.status === 'EN_PROCESO',
+                'bg-success': a.status === 'COMPLETADO'
+              }"
+            >
+              {{ a.status }}
+            </span>
+          </td>
+          <td>{{ a.createdAt | date : 'short' }}</td>
+          <td>
+            <button
+              class="btn btn-sm btn-info me-1 text-white"
+              (click)="viewResults(a)"
+              [disabled]="saving"
+              title="Ver resultados"
+            >
+              Resultados
+            </button>
+            <button
+              class="btn btn-sm btn-main me-1 text-white"
+              (click)="startEdit(a)"
+              [disabled]="saving"
+            >
+              Editar
+            </button>
+            <button
+              class="btn btn-sm btn-secondary-m"
+              (click)="deleteAnalysis(a.id)"
+              [disabled]="deletingId === a.id || saving"
+            >
+              {{ deletingId === a.id ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal de resultados -->
+  <div *ngIf="selectedAnalysisId !== null" class="results-modal">
+    <div class="results-modal-content">
+      <div class="results-modal-header">
+        <h4>Resultados del Análisis #{{ selectedAnalysisId }}</h4>
+        <button class="btn-close" (click)="closeResults()" aria-label="Cerrar"></button>
+      </div>
+      <div class="results-modal-body">
+        <div *ngIf="loadingResults">Cargando resultados...</div>
+        <div *ngIf="!loadingResults && selectedResults.length === 0" class="alert alert-info">
+          No hay resultados disponibles para este análisis.
+        </div>
+        <table class="table table-sm" *ngIf="!loadingResults && selectedResults.length > 0">
+          <thead>
+            <tr>
+              <th>Parámetro</th>
+              <th>Valor</th>
+              <th>Unidad</th>
+              <th>Rango Referencia</th>
+              <th>Observaciones</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of selectedResults; trackBy: trackById">
+              <td>{{ r.parameterName }}</td>
+              <td>
+                <strong>{{ r.value }}</strong>
+              </td>
+              <td>{{ r.unit }}</td>
+              <td>{{ r.referenceRange }}</td>
+              <td>{{ r.observations || '-' }}</td>
+              <td>{{ r.createdAt | date : 'short' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="results-modal-footer">
+        <button class="btn btn-secondary" (click)="closeResults()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</section>
