@@ -35,6 +35,11 @@ export const adminRoutes: Routes = [
             (m) => m.AdminLaboratoriesComponent
           ),
       },
+      {
+        path: 'analysis',
+        loadComponent: () =>
+          import('./pages/analysis/admin-analysis.component').then((m) => m.AdminAnalysisComponent),
+      },
     ],
   },
 ];
