@@ -467,4 +467,5 @@ describe('AdminAnalysisComponent', () => {
 
     expect(id).toBe(analysis.id);
   });
+  
 });
